@@ -21,7 +21,7 @@ public class Gun : MonoBehaviour
     {
         if (Time.time > nextShotTime)
         {
-            nextShotTime = Time.time + nextShotTime / 1000;
+            nextShotTime = Time.time + msBetweenShots / 1000;
             Projectile newProejctile = Instantiate(projectile, muzzle.position, muzzle.rotation);
             newProejctile.SetSpeed(muzzleVelocity);
         }
