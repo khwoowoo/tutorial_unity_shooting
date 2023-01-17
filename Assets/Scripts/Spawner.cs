@@ -7,6 +7,9 @@ public class Spawner : MonoBehaviour
     public Wave[] waves;
     public Enemy enemy;
 
+    LivingEntity playerEntity;
+    Transform playerT;
+
     Wave currentWave;
     int currentWaveNumber;
 
@@ -14,21 +17,85 @@ public class Spawner : MonoBehaviour
     int enemyRemainingAlive;
     float nextSpawnTime;
 
+    MapGenerator map;
+
+    float timeBetweenCampingChecks = 2f;
+    float nextCampCheckTime;
+    float campThresholdDistance = 2.5f;
+    Vector3 campPositionOld;
+    bool isCamping;
+    bool isDisabled;
+
+
     private void Start()
     {
+        playerEntity = FindObjectOfType<Player>();
+        playerEntity.OnDeath += OnPlayerDeath;
+        playerT = playerEntity.transform;
+        nextCampCheckTime = timeBetweenCampingChecks + Time.time;
+        campPositionOld = playerT.position;
+        map = FindObjectOfType<MapGenerator>();
         NextWave();
     }
 
     private void Update()
     {
+        //플레이어가 죽은 경우
+        if (isDisabled)
+        {
+            return;
+        }
+
+        if(Time.time > nextCampCheckTime)
+        {
+            nextCampCheckTime = timeBetweenCampingChecks + Time.time;
+
+            isCamping = (Vector3.Distance(playerT.position, campPositionOld) < campThresholdDistance);
+            print(Vector3.Distance(playerT.position, campPositionOld));
+            campPositionOld = playerT.position;
+        }
+
         if (enemyRemainingToSpawn > 0 && Time.time > nextSpawnTime)
         {
             enemyRemainingToSpawn--;
             nextSpawnTime = Time.time + currentWave.timeBetweenSpawns;
 
-            Enemy spawnedEnemy = Instantiate(enemy, Vector3.zero, Quaternion.identity);
-            spawnedEnemy.OnDeath += OnEnemyDeath;
+            StartCoroutine(SpawnEntity());
         }
+    }
+
+    void OnPlayerDeath()
+    {
+        isDisabled = true;
+    }
+
+    IEnumerator SpawnEntity()
+    {
+        //스폰 되는 시간
+        float spawnDelay = 1f;
+        //타일이 반짝이는 속도
+        float tileFlashSpeed = 4f;
+
+        Transform randomTile = map.GetRandomOpenTile();
+        if (isCamping)
+        {
+            randomTile = map.GetTileFromPosition(playerT.position);
+        }
+        Material tileMat = randomTile.GetComponent<Renderer>().material;
+        Color initColor = tileMat.color;
+        Color flashColor = Color.red;
+        float spawnTimer = 0;
+
+        while (spawnTimer < spawnDelay)
+        {
+            tileMat.color = Color.Lerp(initColor, flashColor, Mathf.PingPong(spawnTimer * tileFlashSpeed, 1));
+
+            spawnTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        Enemy spawnedEnemy = Instantiate(enemy, randomTile.position + Vector3.up, Quaternion.identity);
+        spawnedEnemy.OnDeath += OnEnemyDeath;
     }
 
     void NextWave()
