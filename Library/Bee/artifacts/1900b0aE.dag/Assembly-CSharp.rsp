@@ -350,6 +350,7 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 "Assets/Scripts/Enemy.cs"
+"Assets/Scripts/GameUI.cs"
 "Assets/Scripts/Gun.cs"
 "Assets/Scripts/GunController.cs"
 "Assets/Scripts/IDamageable.cs"

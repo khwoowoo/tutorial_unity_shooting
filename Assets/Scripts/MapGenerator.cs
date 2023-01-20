@@ -28,13 +28,19 @@ public class MapGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GenerateMap();
+        FindObjectOfType<Spawner>().OnNewWave += OnNewWave;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void OnNewWave(int waveNumber)
+    {
+        mapIndex = waveNumber - 1;
+        GenerateMap();
     }
 
     public void GenerateMap()

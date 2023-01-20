@@ -24,7 +24,7 @@ public class Projectile : MonoBehaviour
         //하나라도 있으면, 데미지를 주고 삭제
         if(initialCollisions.Length > 0)
         {
-            OnHitObject(initialCollisions[0]);
+            OnHitObject(initialCollisions[0], transform.position);
         }
     }
 
@@ -49,30 +49,31 @@ public class Projectile : MonoBehaviour
 
         if(Physics.Raycast(ray, out hit, moveDistance + skinWidth, collisionMask, QueryTriggerInteraction.Collide))
         {
-            OnHitObject(hit);
+            OnHitObject(hit.collider, hit.point);
         }
 
     }
 
-    void OnHitObject(RaycastHit hit)
-    {
-        IDamageable damageableObject = hit.collider.GetComponent<IDamageable>();
+    //void OnHitObject(RaycastHit hit)
+    //{
+    //    IDamageable damageableObject = hit.collider.GetComponent<IDamageable>();
 
-        if(damageableObject != null)
-        {
-            damageableObject.TakeHit(damage, hit);
-        }
+    //    if(damageableObject != null)
+    //    {
+    //        damageableObject.TakeHit(damage, hit);
+    //    }
 
-        GameObject.Destroy(gameObject);
-    }
+    //    GameObject.Destroy(gameObject);
+    //}
 
-    void OnHitObject(Collider collider)
+    void OnHitObject(Collider collider, Vector3 hitPoint)
     {
         IDamageable damageableObject = collider.GetComponent<IDamageable>();
 
         if (damageableObject != null)
         {
-            damageableObject.TakeDamage(damage);
+            //damageableObject.TakeDamage(damage);
+            damageableObject.TakeHit(damage, hitPoint, transform.forward);
         }
 
         GameObject.Destroy(gameObject);
