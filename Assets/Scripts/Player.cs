@@ -9,6 +9,7 @@ public class Player : LivingEntity
 {
 
     public float moveSpeed = 5;
+    public Crosshairs crosshairs;
     PlayerController controller;
     GunController gunController;
     Camera viewCamera;
@@ -37,7 +38,8 @@ public class Player : LivingEntity
         //근데 모든 바닥지점을 볼 필요는 없고
         //법선 백터만 확인하면 됨
         Ray ray = viewCamera.ScreenPointToRay(Input.mousePosition);
-        Plane ground = new Plane(Vector3.up, Vector3.zero);
+        //Plane ground = new Plane(Vector3.up, Vector3.zero);
+        Plane ground = new Plane(Vector3.up, Vector3.up * gunController.GunHieght);
         float rayDistance;
 
         //out이라는 키워드는 참조라는 뜻
@@ -45,6 +47,8 @@ public class Player : LivingEntity
             Vector3 point = ray.GetPoint(rayDistance);
             controller.LookAt(point);
             //Debug.DrawLine(ray.origin, point, Color.red);
+            crosshairs.transform.position = point;
+            crosshairs.DetecTargets(ray);
         }
 
         //weapon input

@@ -51,4 +51,12 @@ public class GunController : MonoBehaviour
         equippedGun = Instantiate<Gun>(gunToEquip, weaponHold.position, weaponHold.rotation);
         equippedGun.transform.parent = weaponHold;
     }
+
+    public float GunHieght
+    {
+        get
+        {
+            return weaponHold.position.y;
+        }
+    }
 }
