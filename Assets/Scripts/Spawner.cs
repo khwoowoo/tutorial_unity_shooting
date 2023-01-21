@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    public bool devMode;
     public Wave[] waves;
     public Enemy enemy;
 
@@ -56,12 +57,25 @@ public class Spawner : MonoBehaviour
             campPositionOld = playerT.position;
         }
 
-        if (enemyRemainingToSpawn > 0 && Time.time > nextSpawnTime)
+        if ((enemyRemainingToSpawn > 0 || currentWave.infinite) && Time.time > nextSpawnTime)
         {
             enemyRemainingToSpawn--;
             nextSpawnTime = Time.time + currentWave.timeBetweenSpawns;
 
-            StartCoroutine(SpawnEntity());
+            StartCoroutine("SpawnEnemy");
+        }
+
+        if (devMode)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                StopCoroutine("SpawnEnemy");
+                foreach(Enemy enemy in FindObjectsOfType<Enemy>())
+                {
+                    Destroy(enemy.gameObject);
+                }
+                NextWave();
+            }
         }
     }
 
@@ -75,7 +89,7 @@ public class Spawner : MonoBehaviour
         isDisabled = true;
     }
 
-    IEnumerator SpawnEntity()
+    IEnumerator SpawnEnemy()
     {
         //스폰 되는 시간
         float spawnDelay = 1f;
@@ -102,6 +116,7 @@ public class Spawner : MonoBehaviour
 
         Enemy spawnedEnemy = Instantiate(enemy, randomTile.position + Vector3.up, Quaternion.identity);
         spawnedEnemy.OnDeath += OnEnemyDeath;
+        spawnedEnemy.SetCharacteristics(currentWave.moveSpeed, currentWave.hitsToKillPlayer, currentWave.emenyHealth, currentWave.skinColor);
     }
 
     void NextWave()
@@ -141,7 +156,13 @@ public class Spawner : MonoBehaviour
     [System.Serializable]
     public class Wave
     {
+        public bool infinite;
         public int enemyCount;
         public float timeBetweenSpawns;
+
+        public float moveSpeed;
+        public int hitsToKillPlayer;
+        public float emenyHealth;
+        public Color skinColor;
     }
 }

@@ -10,6 +10,7 @@ public class MapGenerator : MonoBehaviour
     public Transform tilePrefab;
     public Transform navmeshFloor;
     public Transform obstaclePrefab;
+    public Transform mapFloor;
     public Transform navmeshPrefab;
     public Vector2 maxMapSize;
 
@@ -45,11 +46,10 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        //ÇöÀç ¸ÊÀÇ ½Ãµå°ªÀ¸·Î ·£´ı °ª °¡Á®¿À±â
+        //í˜„ì¬ ë§µì˜ ì‹œë“œê°’ìœ¼ë¡œ ëœë¤ ê°’ ê°€ì ¸ì˜¤ê¸°
         currentMap = maps[mapIndex];
         System.Random prng = new System.Random(currentMap.seed);
-        GetComponent<BoxCollider>().size = new Vector3(currentMap.mapSize.x * tileSize, 0.5f, currentMap.mapSize.y * tileSize);
-
+    
         tileMap = new Transform[currentMap.mapSize.x, currentMap.mapSize.y];
 
         //Generating coords
@@ -116,7 +116,7 @@ public class MapGenerator : MonoBehaviour
                 obstacleRenderer.sharedMaterial = obstacleMaterial;
 
 
-                //ÀûÀÌ »ı¼ºÇÒ °÷À» Ã£±â À§ÇØ¼­, Àå¾Ö¹°ÀÌ »ı¼ºµÈ °÷À» Á¦°Å ÇØÁØ´Ù.
+                //ì ì´ ìƒì„±í•  ê³³ì„ ì°¾ê¸° ìœ„í•´ì„œ, ì¥ì• ë¬¼ì´ ìƒì„±ëœ ê³³ì„ ì œê±° í•´ì¤€ë‹¤.
                 allOpenCoords.Remove(randomCoord);
             }
             else
@@ -127,7 +127,7 @@ public class MapGenerator : MonoBehaviour
         
         }
 
-        //¿©±â¼­ ÀûÀÌ »ı¼ºÇÒ ÁÂÇ¥¸¦ ¼¯¾îÁÜ
+        //ì—¬ê¸°ì„œ ì ì´ ìƒì„±í•  ì¢Œí‘œë¥¼ ì„ì–´ì¤Œ
         shuffledOpenTileCoords = new Queue<Coord>(Utiliy.ShuffleArray(allOpenCoords.ToArray(), currentMap.seed));
 
         //Craete navmesh mask
@@ -148,6 +148,8 @@ public class MapGenerator : MonoBehaviour
         maskBottom.localScale = new Vector3(maxMapSize.x, 1, (maxMapSize.y - currentMap.mapSize.y) / 2f) * tileSize;
 
         navmeshFloor.localScale = new Vector3(maxMapSize.x,  maxMapSize.y) * tileSize;
+
+        mapFloor.localScale = new Vector3(currentMap.mapSize.x * tileSize, currentMap.mapSize.y * tileSize);
     }
 
     bool MapIsFullyAccessible(bool[,] obstacleMap, int currentObstacleCount)

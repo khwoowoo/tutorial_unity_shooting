@@ -35,6 +35,23 @@ public class Enemy : LivingEntity
 
     bool hasTarget;
 
+    private void Awake()
+    {
+        //이런식으로 tag를 사용하여 객체을 참조할 수 있음
+        pathfinder = GetComponent<NavMeshAgent>();
+
+        if (GameObject.FindGameObjectWithTag("Player") != null)
+        {
+            hasTarget = true;
+
+            target = GameObject.FindGameObjectWithTag("Player").transform;
+            targetEntity = target.GetComponent<LivingEntity>();
+
+            myCollisionRadius = GetComponent<CapsuleCollider>().radius;
+            targetCollisionRaduis = target.GetComponent<CapsuleCollider>().radius;
+        }
+    }
+
 
     // Start is called before the first frame update
     protected override void Start()
@@ -42,23 +59,28 @@ public class Enemy : LivingEntity
         base.Start();
         //이런식으로 tag를 사용하여 객체을 참조할 수 있음
         pathfinder = GetComponent<NavMeshAgent>();
-        skinMaterial = GetComponent<Renderer>().material;
 
-        if(GameObject.FindGameObjectWithTag("Player") != null)
+        if(hasTarget)
         {
-            hasTarget = true;
-            originColor = skinMaterial.color;
-            target = GameObject.FindGameObjectWithTag("Player").transform;
-            targetEntity = target.GetComponent<LivingEntity>();
             currentState = State.Chasing;
             targetEntity.OnDeath += OnTargetDeath;
-
-            myCollisionRadius = GetComponent<CapsuleCollider>().radius;
-            targetCollisionRaduis = target.GetComponent<CapsuleCollider>().radius;
-
             StartCoroutine(UpdatePath());
         }
 
+    }
+    public void SetCharacteristics(float movespeed, int hitsToKillPlayer, float enemyHealth, Color skinColor)
+    {
+        pathfinder.speed = movespeed;
+
+        if (hasTarget)
+        {
+            damage = targetEntity.startingHealth / hitsToKillPlayer;
+        }
+
+        startingHealth = enemyHealth;
+        skinMaterial = GetComponent<Renderer>().material;
+        skinMaterial.color = skinColor;
+        originColor = skinMaterial.color;
     }
 
     // Update is called once per frame
@@ -105,6 +127,7 @@ public class Enemy : LivingEntity
         hasTarget = false;
         currentState = State.Idle;
     }
+
 
     IEnumerator Attack()
     {
