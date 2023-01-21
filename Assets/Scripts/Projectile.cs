@@ -6,6 +6,7 @@ public class Projectile : MonoBehaviour
 {
     //LayterMask는 어떤 오브젝트, 어떤 레이어가 발사체와 총돌할지 정할 수 있음.
     public LayerMask collisionMask;
+    public Color trailColor;
     float speed = 10f;
     float damage = 1f;
 
@@ -26,6 +27,8 @@ public class Projectile : MonoBehaviour
         {
             OnHitObject(initialCollisions[0], transform.position);
         }
+
+        //GetComponent<TrailRenderer>().material.SetColor("_TintColor", trailColor);
     }
 
     // Update is called once per frame
