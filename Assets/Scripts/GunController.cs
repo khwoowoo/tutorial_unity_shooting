@@ -5,18 +5,14 @@ using UnityEngine;
 public class GunController : MonoBehaviour
 {
     public Transform weaponHold;
-    public Gun startingGun;
+    public Gun[] allGuns;
 
     Gun equippedGun;
 
     // Start is called before the first frame update
     void Start()
     {
-        //시작 총이 있으면
-        if(startingGun != null)
-        {
-            EquipGun(startingGun);
-        }
+        
     }
 
     // Update is called once per frame
@@ -66,6 +62,16 @@ public class GunController : MonoBehaviour
 
         equippedGun = Instantiate<Gun>(gunToEquip, weaponHold.position, weaponHold.rotation);
         equippedGun.transform.parent = weaponHold;
+    }
+
+    public void EquipGun(int waveIndex)
+    {
+        if(waveIndex >= allGuns.Length)
+        {
+            waveIndex = 2;
+        }
+
+        EquipGun(allGuns[waveIndex]);
     }
 
     public float GunHieght
