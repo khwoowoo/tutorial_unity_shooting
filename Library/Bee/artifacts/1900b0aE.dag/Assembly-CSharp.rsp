@@ -365,6 +365,7 @@
 "Assets/Scripts/PlayerController.cs"
 "Assets/Scripts/Projectile.cs"
 "Assets/Scripts/Shell.cs"
+"Assets/Scripts/SoundLibrary.cs"
 "Assets/Scripts/Spawner.cs"
 "Assets/Scripts/Utiliy.cs"
 -langversion:9.0

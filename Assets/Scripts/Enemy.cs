@@ -106,6 +106,7 @@ public class Enemy : LivingEntity
                 {
                     nextAttackTime = Time.time + timeBetweenAttacks;
                     StartCoroutine(Attack());
+                    AudioManager.instance.PlaySound("Emeny attack", transform.position);
                 }
             }
         }
@@ -114,8 +115,10 @@ public class Enemy : LivingEntity
 
     public override void TakeHit(float damage, Vector3 hitPoint, Vector3 hitDirection)
     {
+        AudioManager.instance.PlaySound("Impact", transform.position);
         if(damage >= health)
         {
+            AudioManager.instance.PlaySound("Emeny death", transform.position);
             Destroy(Instantiate(deathEffect.gameObject, hitPoint, Quaternion.FromToRotation(Vector3.forward, hitDirection)), deathEffect.startLifetime);
         }
 
