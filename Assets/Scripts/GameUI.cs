@@ -37,6 +37,7 @@ public class GameUI : MonoBehaviour
         newWaveTile.text = "- wave " + numbers[waveNumber -1] + " -";
         newWaveEnemycount.text = "Enemy: " + enemyCountStarting;
 
+        //계속 코루틴 함수 실행되는거 방지
         StopCoroutine("AnimateNewWaveBanner");
         StartCoroutine("AnimateNewWaveBanner");
     }
