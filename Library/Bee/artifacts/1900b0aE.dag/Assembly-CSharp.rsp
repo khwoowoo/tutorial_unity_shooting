@@ -359,6 +359,7 @@
 "Assets/Scripts/IDamageable.cs"
 "Assets/Scripts/LivingEntity.cs"
 "Assets/Scripts/MapGenerator.cs"
+"Assets/Scripts/Menu.cs"
 "Assets/Scripts/MusicManager.cs"
 "Assets/Scripts/MuzzleFlash.cs"
 "Assets/Scripts/Player.cs"

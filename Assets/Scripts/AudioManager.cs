@@ -12,11 +12,11 @@ public class AudioManager : MonoBehaviour
     }
 
     //마스터 볼륨
-    float masterVolumePercent = .2f;
+    public float masterVolumePercent { get; private set; }
     //일반 볼륨(사운드 짦은)
-    float sfxVolumePercent = 1f;
+    public float sfxVolumePercent { get; private set; }
     //뮤직 볼륨(사운드가 긴)
-    float musicVolumePercent = 1f;
+    public float musicVolumePercent { get; private set; }
 
     AudioSource sfx2DSource;
     //뮤직소스를 배열을 사용하는 이유는
@@ -71,11 +71,18 @@ public class AudioManager : MonoBehaviour
 
         //캐릭터와 오디오 리슨너 위치 같게 하려고
         audioListener = FindObjectOfType<AudioListener>().transform;
-        playerT = FindObjectOfType<Player>().transform;
 
-        masterVolumePercent = PlayerPrefs.GetFloat("master vol", masterVolumePercent);
-        sfxVolumePercent = PlayerPrefs.GetFloat("sfx vol", sfxVolumePercent);
-        musicVolumePercent = PlayerPrefs.GetFloat("music vol", musicVolumePercent);
+        if (FindObjectOfType<Player>() != null)
+        {
+            playerT = FindObjectOfType<Player>().transform;
+        }
+        masterVolumePercent = PlayerPrefs.GetFloat("master vol", 1f);
+        sfxVolumePercent = PlayerPrefs.GetFloat("sfx vol", 1f);
+        musicVolumePercent = PlayerPrefs.GetFloat("music vol", 1f);
+        print(masterVolumePercent);
+        print(sfxVolumePercent);
+        print(musicVolumePercent);
+
     }
 
     private void Update()
@@ -84,6 +91,13 @@ public class AudioManager : MonoBehaviour
         if (playerT != null)
         {
             audioListener.position = playerT.position;
+        }
+        else
+        {
+            if (FindObjectOfType<Player>() != null)
+            {
+                playerT = FindObjectOfType<Player>().transform;
+            }
         }
     }
 
@@ -105,15 +119,17 @@ public class AudioManager : MonoBehaviour
         //현재 뮤직이 재생 중일 수도 있으니
         musicSource[0].volume = musicVolumePercent * masterVolumePercent;
         musicSource[1].volume = musicVolumePercent * masterVolumePercent;
-
+        
         PlayerPrefs.SetFloat("master vol", masterVolumePercent);
         PlayerPrefs.SetFloat("sfx vol", sfxVolumePercent);
         PlayerPrefs.SetFloat("music vol", musicVolumePercent);
+        PlayerPrefs.Save();
     }
 
     //뮤직 재생
     public void PlayMusic(AudioClip clip, float fadeDuration = 1)
     {
+
         //음악 재생
         activeMusicSourceIndex = 1 - activeMusicSourceIndex;
         musicSource[activeMusicSourceIndex].clip = clip;
